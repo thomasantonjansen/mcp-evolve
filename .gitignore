@@ -1,0 +1,10 @@
+# Release files stay outside the public source tree.
+*.exe
+*.msi
+*.zip
+SHA256SUMS.txt
+
+# Local release and editor files
+.DS_Store
+Thumbs.db
+
