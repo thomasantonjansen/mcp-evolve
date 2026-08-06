@@ -90,8 +90,15 @@ Write-Host "Installer: $($installer.FullName)"
 Write-Host "SHA-256:   $checksum"
 Write-Host "Release:   $Repository@$Tag"
 
-$releaseView = & $GhPath release view $Tag --repo $Repository --json tagName 2>&1
-$releaseExists = $LASTEXITCODE -eq 0
+$strictNativePreference = $PSNativeCommandUseErrorActionPreference
+$PSNativeCommandUseErrorActionPreference = $false
+try {
+    $releaseView = & $GhPath release view $Tag --repo $Repository --json tagName 2>&1
+    $releaseExitCode = $LASTEXITCODE
+} finally {
+    $PSNativeCommandUseErrorActionPreference = $strictNativePreference
+}
+$releaseExists = $releaseExitCode -eq 0
 
 if ($releaseExists) {
     Write-Host 'Existing release found; replacing release assets with --clobber.'
@@ -131,4 +138,3 @@ Write-Host ''
 Write-Host 'Release published successfully.' -ForegroundColor Green
 Write-Host "Download: $releaseUrl"
 Write-Host "Uploaded: $($installer.Name), SHA256SUMS.txt"
-
