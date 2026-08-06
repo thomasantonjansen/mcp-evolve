@@ -41,21 +41,26 @@ The installer is intended for Windows 10/11 x64. Python, Node.js, npm, Git, and 
 From a clone of this repository, run:
 
 ```powershell
-& .\scripts\release.ps1 -Version 0.1.0
+& .\scripts\release.ps1
 ```
+
+Without `-Version`, the script scans the sibling private build folder and selects the
+highest semantic version matching `MCP-Evolve-Setup-X.Y.Z.exe`. For example, if both
+`0.1.0` and `0.1.1` exist, it selects `0.1.1`. Pass `-Version 0.1.0` when you want to
+override automatic selection.
 
 On Windows systems where PowerShell is forced into `ConstrainedLanguage`, do not use
 `powershell.exe -File` for this script. Invoke it through the call operator instead:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\Users\gebruiker\Documents\mcp-evolve\scripts\release.ps1' -Version '0.1.0'"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\Users\gebruiker\Documents\mcp-evolve\scripts\release.ps1'"
 ```
 
 The script:
 
 1. Checks that GitHub CLI is installed and authenticated.
 2. Verifies that `thomasantonjansen/mcp-evolve` is public.
-3. Finds the installer at `C:\Users\gebruiker\Documents\UnityMCPApp\artifacts\MCP-Evolve-Setup-<version>.exe` when the two repositories are siblings.
+3. Finds the highest-version installer at `C:\Users\gebruiker\Documents\UnityMCPApp\artifacts\MCP-Evolve-Setup-<version>.exe` when the two repositories are siblings.
 4. Generates a SHA-256 checksum.
 5. Creates the `v<version>` GitHub release, or updates the existing release.
 6. Uploads exactly two files: the installer and `SHA256SUMS.txt`, using `--clobber` for repeatable releases.
