@@ -41,7 +41,14 @@ The installer is intended for Windows 10/11 x64. Python, Node.js, npm, Git, and 
 From a clone of this repository, run:
 
 ```powershell
-.\scripts\release.ps1 -Version 0.1.0
+& .\scripts\release.ps1 -Version 0.1.0
+```
+
+On Windows systems where PowerShell is forced into `ConstrainedLanguage`, do not use
+`powershell.exe -File` for this script. Invoke it through the call operator instead:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\Users\gebruiker\Documents\mcp-evolve\scripts\release.ps1' -Version '0.1.0'"
 ```
 
 The script:
@@ -56,7 +63,7 @@ The script:
 For a different build location:
 
 ```powershell
-.\scripts\release.ps1 -Version 0.1.0 -InstallerPath 'D:\builds\MCP-Evolve-Setup-0.1.0.exe'
+& .\scripts\release.ps1 -Version 0.1.0 -InstallerPath 'D:\builds\MCP-Evolve-Setup-0.1.0.exe'
 ```
 
 The release script never runs `git add`, `git archive`, or a source upload. It accepts one `.exe` file explicitly and passes only that file plus the checksum file to GitHub Releases.
@@ -80,4 +87,3 @@ GitHub Issues are enabled for this repository. Use the templates for [bug report
 ## License and distribution
 
 This repository is a public product and release surface. The application source code is maintained privately; publication of this repository does not grant a license to that private source code. Refer to the release notes and installer terms for the applicable distribution terms.
-
