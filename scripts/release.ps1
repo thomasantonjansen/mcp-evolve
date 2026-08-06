@@ -177,16 +177,11 @@ Write-Host "SHA-256:   $checksum"
 Write-Host "Release:   $Repository@$Tag"
 
 Step "Check existing release" {
-    $strictNativePreference = $PSNativeCommandUseErrorActionPreference
-    $PSNativeCommandUseErrorActionPreference = $false
-
-    try {
-        $releaseView = & $GhPath release view $Tag --repo $Repository --json tagName 2>&1
-        $script:releaseExitCode = $LASTEXITCODE
-    }
-    finally {
-        $PSNativeCommandUseErrorActionPreference = $strictNativePreference
-    }
+    # gh returns exit code 1 and writes "release not found" to stderr when this
+    # is the first release. Suppress that expected stderr in Windows PowerShell
+    # 5.1 and branch on the native exit code instead.
+    $releaseView = & $GhPath release view $Tag --repo $Repository --json tagName 2>$null
+    $script:releaseExitCode = $LASTEXITCODE
 
     $script:releaseExists = $releaseExitCode -eq 0
 }
